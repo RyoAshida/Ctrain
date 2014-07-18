@@ -22,6 +22,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.example.ctrain.Tab1"></activity>
+        <activity android:name="com.example.ctrain.Tab2"></activity>
     </application>
 
 </manifest>

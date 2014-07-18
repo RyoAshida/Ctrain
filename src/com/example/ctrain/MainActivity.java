@@ -1,27 +1,36 @@
 package com.example.ctrain;
 
-import android.app.Activity;
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.Fragment;
+import android.app.TabActivity;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TabHost;
 import android.os.Build;
 
+@SuppressWarnings("deprecation")
 public class MainActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
-		if (savedInstanceState == null) {
-			getFragmentManager().beginTransaction()
-					.add(R.id.container, new PlaceholderFragment()).commit();
-		}
+		
+		final ActionBar actionBar = getActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		actionBar.addTab(actionBar.newTab()
+				.setText("tab1!")
+				.setTabListener(new TabListener<Tab1> (this, "tab1", Tab1.class)));
+		actionBar.addTab(actionBar.newTab()
+				.setText("tab2!!")
+				.setTabListener(new TabListener<Tab2> (this, "tab2", Tab2.class)));
 	}
 
 	@Override
