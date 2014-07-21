@@ -42,4 +42,3 @@ public class TabListener<T extends Fragment> implements ActionBar.TabListener {
     }
 
 }
-
