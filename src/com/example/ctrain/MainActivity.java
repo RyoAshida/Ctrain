@@ -1,5 +1,13 @@
 package com.example.ctrain;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.util.*;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
@@ -44,12 +52,14 @@ public class MainActivity extends FragmentActivity implements LocationListener,
     public static int btCount = 0;
     public static double latitude = 0;
     public static double longitude = 0;
+    public static List<Achievement> list = new ArrayList<Achievement>();
     
     private Tab tab1;
     private Tab tab2;
     
     private LocationRequest locationRequest;
     private LocationClient locationClient;
+    
     
 	@SuppressLint("CommitTransaction")
 	@Override
@@ -83,6 +93,47 @@ public class MainActivity extends FragmentActivity implements LocationListener,
         locationRequest.setInterval(5 * 1000); // 5 sec.
         locationRequest.setFastestInterval(1 * 1000); // 1 sec.
         locationClient = new LocationClient(this, this, this);
+        
+        
+        try {
+			BufferedReader br = new BufferedReader(new InputStreamReader(openFileInput("achievements.txt")));
+			list.clear();
+			String str = br.readLine();
+			while (str != null) {
+				int n = Integer.parseInt(br.readLine());
+				if (str.equals("Yamanote")) {
+					list.add(new Achievement(Lines.Yamanote, n));
+				} else if (str.equals("Chuo")) {
+					list.add(new Achievement(Lines.Chuo, n));
+				}
+				str = br.readLine();
+			}
+			br.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        list.add(new Achievement(Lines.Yamanote, 1));
+	}
+	
+	@Override
+	protected void onDestroy() {
+		try {
+			PrintWriter pr = new PrintWriter(new OutputStreamWriter(openFileOutput("achievements.txt", Context.MODE_PRIVATE)));
+			for (Achievement ac: list) {
+				if (ac.line == Lines.Yamanote) {
+					pr.println("Yamanote");
+				} else if (ac.line == Lines.Chuo) {
+					pr.println("Chuo");
+				}
+				pr.println(ac.crowd);
+			}
+			pr.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		super.onDestroy();
 	}
 	
 	@Override
