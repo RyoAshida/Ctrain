@@ -1,5 +1,11 @@
 package com.example.ctrain;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+
 import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -14,6 +20,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,7 +30,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements LocationListener,
+															GooglePlayServicesClient.ConnectionCallbacks,
+															GooglePlayServicesClient.OnConnectionFailedListener {
 	
 	private final static String TAG = "MainActivity";
 	private BluetoothAdapter btAdapter = null;
@@ -33,9 +42,14 @@ public class MainActivity extends FragmentActivity {
     private ActionBar actionBar;
     
     public static int btCount = 0;
+    public static double latitude = 0;
+    public static double longitude = 0;
     
     private Tab tab1;
     private Tab tab2;
+    
+    private LocationRequest locationRequest;
+    private LocationClient locationClient;
     
 	@SuppressLint("CommitTransaction")
 	@Override
@@ -62,18 +76,32 @@ public class MainActivity extends FragmentActivity {
             Toast.makeText(this, "Bluetooth is not supported", Toast.LENGTH_SHORT).show();
             finish();
         }
+        
+        //GPS setting
+        locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(5 * 1000); // 5 sec.
+        locationRequest.setFastestInterval(1 * 1000); // 1 sec.
+        locationClient = new LocationClient(this, this, this);
 	}
 	
 	@Override
 	protected void onStart() {
         super.onStart();
         Log.i(TAG, "onStart");
+        locationClient.connect();
         if (!btAdapter.isEnabled())
             startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
                     REQUEST_ENABLE_BT);
         else
             setupBT();
     }
+	
+	@Override
+	protected void onStop() {
+		locationClient.disconnect();
+		super.onStop();
+	}
 
 
 	@Override
@@ -165,5 +193,33 @@ public class MainActivity extends FragmentActivity {
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         registerReceiver(btSearchReceiver, filter);
     }
+
+	@Override
+	public void onConnectionFailed(ConnectionResult result) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onConnected(Bundle connectionHint) {
+		// TODO Auto-generated method stub
+		locationClient.requestLocationUpdates(locationRequest, this);
+	}
+
+	@Override
+	public void onDisconnected() {
+		// TODO Auto-generated method stub
+		locationClient.removeLocationUpdates(this);
+	}
+
+	@Override
+	public void onLocationChanged(Location location) {
+		// TODO Auto-generated method stub
+		Location loc = locationClient.getLastLocation();
+		latitude = loc.getLatitude();
+		longitude = loc.getLongitude();
+        actionBar.selectTab(tab2);
+        actionBar.selectTab(tab1);
+	}
 
 }

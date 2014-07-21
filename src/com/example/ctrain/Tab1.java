@@ -18,5 +18,9 @@ public class Tab1 extends Fragment {
 		super.onViewCreated(view, savedInstanceState);
 		TextView text = (TextView) view.findViewById(R.id.textView1);
 		text.setText(Integer.toString(MainActivity.btCount));
+		TextView lat = (TextView) view.findViewById(R.id.latitude_view);
+		TextView lon = (TextView) view.findViewById(R.id.longitude_view);
+		lat.setText(Double.toString(MainActivity.latitude));
+		lon.setText(Double.toString(MainActivity.longitude));
 	}
 }
