@@ -22,5 +22,7 @@ public class Tab1 extends Fragment {
 		TextView lon = (TextView) view.findViewById(R.id.longitude_view);
 		lat.setText(Double.toString(MainActivity.latitude));
 		lon.setText(Double.toString(MainActivity.longitude));
+		TextView line = (TextView) view.findViewById(R.id.route);
+		line.setText(MainActivity.route);
 	}
 }

@@ -52,7 +52,10 @@ public class MainActivity extends FragmentActivity implements LocationListener,
     public static int btCount = 0;
     public static double latitude = 0;
     public static double longitude = 0;
-    public static List<Achievement> list = new ArrayList<Achievement>();
+    public static String route = "Other";
+    public final static int num = 2;
+    public static boolean[][] gotten = new boolean[num][4];
+    public static String[] lines = {"Yamanote", "Chuo"};
     
     private Tab tab1;
     private Tab tab2;
@@ -61,11 +64,21 @@ public class MainActivity extends FragmentActivity implements LocationListener,
     private LocationClient locationClient;
     
     
+    
+    
+    private Map<String, Integer> map = new HashMap<String, Integer>();
+    
 	@SuppressLint("CommitTransaction")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		map.clear();
+		for (int i = 0; i < lines.length; i++) {
+			map.put(lines[i], i);
+			Arrays.fill(gotten[i], false);
+		}
 		
 		//tab setting
 		actionBar = getActionBar();
@@ -90,22 +103,17 @@ public class MainActivity extends FragmentActivity implements LocationListener,
         //GPS setting
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(5 * 1000); // 5 sec.
-        locationRequest.setFastestInterval(1 * 1000); // 1 sec.
+        locationRequest.setInterval(5 * 100000); // 5 sec.
+        locationRequest.setFastestInterval(1 * 100000); // 1 sec.
         locationClient = new LocationClient(this, this, this);
         
         
         try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(openFileInput("achievements.txt")));
-			list.clear();
 			String str = br.readLine();
 			while (str != null) {
 				int n = Integer.parseInt(br.readLine());
-				if (str.equals("Yamanote")) {
-					list.add(new Achievement(Lines.Yamanote, n));
-				} else if (str.equals("Chuo")) {
-					list.add(new Achievement(Lines.Chuo, n));
-				}
+				gotten[map.get(str)][n] = true;
 				str = br.readLine();
 			}
 			br.close();
@@ -114,26 +122,6 @@ public class MainActivity extends FragmentActivity implements LocationListener,
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        list.add(new Achievement(Lines.Yamanote, 1));
-	}
-	
-	@Override
-	protected void onDestroy() {
-		try {
-			PrintWriter pr = new PrintWriter(new OutputStreamWriter(openFileOutput("achievements.txt", Context.MODE_PRIVATE)));
-			for (Achievement ac: list) {
-				if (ac.line == Lines.Yamanote) {
-					pr.println("Yamanote");
-				} else if (ac.line == Lines.Chuo) {
-					pr.println("Chuo");
-				}
-				pr.println(ac.crowd);
-			}
-			pr.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		super.onDestroy();
 	}
 	
 	@Override
@@ -151,6 +139,20 @@ public class MainActivity extends FragmentActivity implements LocationListener,
 	@Override
 	protected void onStop() {
 		locationClient.disconnect();
+		try {
+			PrintWriter pr = new PrintWriter(new OutputStreamWriter(openFileOutput("achievements.txt", Context.MODE_PRIVATE)));
+			for (int i = 0; i < num; i++) {
+				for (int j = 0; j < 4; j++) {
+					if (gotten[i][j]) {
+						pr.println(lines[i]);
+						pr.println(j);
+					}
+				}
+			}
+			pr.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 		super.onStop();
 	}
 
@@ -269,8 +271,35 @@ public class MainActivity extends FragmentActivity implements LocationListener,
 		Location loc = locationClient.getLastLocation();
 		latitude = loc.getLatitude();
 		longitude = loc.getLongitude();
+		route = getLine(latitude, longitude);
+		int n = map.get(route);
+		int m = rank(btCount);
+		if (m >= 0) gotten[n][m] = true; 
         actionBar.selectTab(tab2);
         actionBar.selectTab(tab1);
+	}
+	
+	private double[][] yamanote = {{35.6926678760627,35.65682986717963,139.695703089233,139.70840603112754},
+			{35.54279441468406,35.51345673479633,140.2534309029537,140.2860465645748}};
+	private double[][] chuo = {};
+	private String getLine(double lat, double lon) {
+		for (int i = 0; i < yamanote.length; i++) {
+			if (yamanote[i][1] < lat && lat < yamanote[i][0] && yamanote[i][2] < lon && lon < yamanote[i][3])
+				return "Yamanote";
+		}
+		for (int i = 0; i < chuo.length; i++) {
+			if (chuo[i][1] < lat && lat < chuo[i][0] && chuo[i][2] < lon && lon < chuo[i][3])
+				return "Chuo";
+		}
+		return "Other";
+	}
+	
+	private int rank(int n) {
+		if (n < 1) return -1;
+		if (n < 2) return 0;
+		if (n < 5) return 1;
+		if (n < 10) return 2;
+		return 3;
 	}
 
 }
