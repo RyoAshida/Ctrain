@@ -55,7 +55,8 @@ public class MainActivity extends FragmentActivity implements LocationListener,
     public static String route = "Other";
     public final static int num = 2;
     public static boolean[][] gotten = new boolean[num][4];
-    public static String[] lines = {"Yamanote", "Chuo"};
+    public static String Yamanote = "Yamanote", Chuo = "Chuo", Other = "Other";
+    public static String[] lines = {Yamanote, Chuo};
     
     private Tab tab1;
     private Tab tab2;
@@ -272,9 +273,11 @@ public class MainActivity extends FragmentActivity implements LocationListener,
 		latitude = loc.getLatitude();
 		longitude = loc.getLongitude();
 		route = getLine(latitude, longitude);
-		int n = map.get(route);
-		int m = rank(btCount);
-		if (m >= 0) gotten[n][m] = true; 
+		if (!route.equals(Other)) {
+			int n = map.get(route);
+			int m = rank(btCount);
+			if (m >= 0) gotten[n][m] = true;
+		}
         actionBar.selectTab(tab2);
         actionBar.selectTab(tab1);
 	}
@@ -285,13 +288,13 @@ public class MainActivity extends FragmentActivity implements LocationListener,
 	private String getLine(double lat, double lon) {
 		for (int i = 0; i < yamanote.length; i++) {
 			if (yamanote[i][1] < lat && lat < yamanote[i][0] && yamanote[i][2] < lon && lon < yamanote[i][3])
-				return "Yamanote";
+				return Yamanote;
 		}
 		for (int i = 0; i < chuo.length; i++) {
 			if (chuo[i][1] < lat && lat < chuo[i][0] && chuo[i][2] < lon && lon < chuo[i][3])
-				return "Chuo";
+				return Chuo;
 		}
-		return "Other";
+		return Other;
 	}
 	
 	private int rank(int n) {
