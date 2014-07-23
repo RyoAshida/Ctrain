@@ -16,8 +16,8 @@ public class Achievement {
 		return "";
 	}
 	
-	public String getCrowd() {
-		return Integer.toString(crowd);
+	public int getCrowd() {
+		return crowd;
 	}
 	
 }

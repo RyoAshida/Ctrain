@@ -4,16 +4,27 @@
     android:layout_height="match_parent"
     android:orientation="horizontal" >
 
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_launcher"
+        android:contentDescription="@string/icon" />
+
     <TextView
         android:id="@+id/line"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:text="@string/initial"
+        android:layout_margin="5pt"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
         android:id="@+id/crowd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:text="@string/initial"
+        android:layout_margin="5pt"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </LinearLayout>

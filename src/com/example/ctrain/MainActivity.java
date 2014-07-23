@@ -97,15 +97,15 @@ public class MainActivity extends FragmentActivity implements LocationListener,
 		BluetoothManager btManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         btAdapter = btManager.getAdapter();
         if (btAdapter == null) {
-            Toast.makeText(this, "Bluetooth is not supported", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Bluetooth is not supported", Toast.LENGTH_LONG).show();
             finish();
         }
         
         //GPS setting
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(5 * 100000); // 5 sec.
-        locationRequest.setFastestInterval(1 * 100000); // 1 sec.
+        locationRequest.setInterval(10 * 1000); // 5 sec.
+        locationRequest.setFastestInterval(5 * 1000); // 1 sec.
         locationClient = new LocationClient(this, this, this);
         
         
@@ -230,8 +230,10 @@ public class MainActivity extends FragmentActivity implements LocationListener,
                 Log.i(TAG, "onReceive: " + action);
                 if (action.equals(BluetoothDevice.ACTION_FOUND)) {
                     btCount++;
-                    actionBar.selectTab(tab2);
-                    actionBar.selectTab(tab1);
+                    if (actionBar.getSelectedTab() == tab1) {
+            	        actionBar.selectTab(tab2);
+            	        actionBar.selectTab(tab1);
+            		}
                 }
                 else if (action.equals(BluetoothAdapter.ACTION_DISCOVERY_STARTED)) {
                     invalidateOptionsMenu();
@@ -250,25 +252,21 @@ public class MainActivity extends FragmentActivity implements LocationListener,
 
 	@Override
 	public void onConnectionFailed(ConnectionResult result) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void onConnected(Bundle connectionHint) {
-		// TODO Auto-generated method stub
 		locationClient.requestLocationUpdates(locationRequest, this);
 	}
 
 	@Override
 	public void onDisconnected() {
-		// TODO Auto-generated method stub
 		locationClient.removeLocationUpdates(this);
 	}
 
 	@Override
 	public void onLocationChanged(Location location) {
-		// TODO Auto-generated method stub
 		Location loc = locationClient.getLastLocation();
 		latitude = loc.getLatitude();
 		longitude = loc.getLongitude();
@@ -278,12 +276,15 @@ public class MainActivity extends FragmentActivity implements LocationListener,
 			int m = rank(btCount);
 			if (m >= 0) gotten[n][m] = true;
 		}
-        actionBar.selectTab(tab2);
-        actionBar.selectTab(tab1);
+		if (actionBar.getSelectedTab() == tab1) {
+	        actionBar.selectTab(tab2);
+	        actionBar.selectTab(tab1);
+		}
 	}
 	
 	private double[][] yamanote = {{35.6926678760627,35.65682986717963,139.695703089233,139.70840603112754},
-			{35.54279441468406,35.51345673479633,140.2534309029537,140.2860465645748}};
+			{35.54279441468406,35.51345673479633,140.2534309029537,140.2860465645748},
+			{35.60911386999346,35.59976266291856,139.67991024255332,139.6876350045162}};
 	private double[][] chuo = {};
 	private String getLine(double lat, double lon) {
 		for (int i = 0; i < yamanote.length; i++) {
@@ -297,7 +298,7 @@ public class MainActivity extends FragmentActivity implements LocationListener,
 		return Other;
 	}
 	
-	private int rank(int n) {
+	public static int rank(int n) {
 		if (n < 1) return -1;
 		if (n < 2) return 0;
 		if (n < 5) return 1;

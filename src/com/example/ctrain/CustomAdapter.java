@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class CustomAdapter extends ArrayAdapter<Achievement>{
@@ -27,10 +28,23 @@ public class CustomAdapter extends ArrayAdapter<Achievement>{
 			 convertView = layoutInflater_.inflate(R.layout.list_item, null);
 		 }
 		 
+		 ImageView icon = (ImageView) convertView.findViewById(R.id.icon);
+		 String l = item.getLine();
+		 int n = item.getCrowd();
+		 if (l.equals(MainActivity.Yamanote)) {
+			 icon.setImageResource(R.drawable.y_icon);
+		 } else if (l.equals(MainActivity.Chuo)) {
+			 icon.setImageResource(R.drawable.c_icon);
+		 } 
 		 TextView line = (TextView)convertView.findViewById(R.id.line);
-		 line.setText(item.getLine());
+		 line.setText(l);
 		 TextView cd = (TextView)convertView.findViewById(R.id.crowd);
-		 cd.setText(item.getCrowd());
+		 switch(n) {
+		 case 0: cd.setText("がらがら"); break;
+		 case 1: cd.setText("普通"); break;
+		 case 2: cd.setText("混雑"); break;
+		 case 3: cd.setText("圧死"); break;
+		 }
 		 
 		 return convertView;
 	 }
