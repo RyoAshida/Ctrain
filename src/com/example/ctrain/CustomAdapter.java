@@ -37,7 +37,10 @@ public class CustomAdapter extends ArrayAdapter<Achievement>{
 			 icon.setImageResource(R.drawable.c_icon);
 		 } 
 		 TextView line = (TextView)convertView.findViewById(R.id.line);
-		 line.setText(l);
+		 if (l.equals(MainActivity.Yamanote))
+			 line.setText("山手線");
+		 else if (l.equals(MainActivity.Chuo))
+		 	line.setText("中央線");
 		 TextView cd = (TextView)convertView.findViewById(R.id.crowd);
 		 switch(n) {
 		 case 0: cd.setText("がらがら"); break;

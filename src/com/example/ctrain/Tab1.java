@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+//import android.widget.Toast;
 
 public class Tab1 extends Fragment {
 	
@@ -18,7 +18,7 @@ public class Tab1 extends Fragment {
 	
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
-		long start = System.currentTimeMillis();
+//		long start = System.currentTimeMillis();
 		super.onViewCreated(view, savedInstanceState);
 		//number of terminals
 		int count = MainActivity.btCount;
@@ -32,7 +32,10 @@ public class Tab1 extends Fragment {
 		//line
 		TextView line = (TextView) view.findViewById(R.id.route);
 		String r = MainActivity.route;
-		line.setText(r);
+		if (r.equals(MainActivity.Yamanote))
+			line.setText("山手線");
+		else if (r.equals(MainActivity.Chuo))
+			line.setText("中央線");
 		//crowd image
 		ImageView crowd = (ImageView) view.findViewById(R.id.crowd);
 		int n = Math.max(0, MainActivity.rank(count));
@@ -58,6 +61,6 @@ public class Tab1 extends Fragment {
 		case 1: lineimage.setImageResource(R.drawable.chuo); break;
 		}
 		lineimage.refreshDrawableState();
-		Toast.makeText(getActivity(), Long.toString(System.currentTimeMillis()-start), Toast.LENGTH_LONG).show();
+//		Toast.makeText(getActivity(), Long.toString(System.currentTimeMillis()-start), Toast.LENGTH_LONG).show();
 	}
 }
