@@ -231,6 +231,9 @@ public class MainActivity extends FragmentActivity implements LocationListener,
                 if (action.equals(BluetoothDevice.ACTION_FOUND)) {
                     btCount++;
                     if (actionBar.getSelectedTab() == tab1) {
+//                    	actionBar.removeTab(tab1);
+//                    	actionBar.addTab(tab1, 0);
+//                    	actionBar.selectTab(tab1);
             	        actionBar.selectTab(tab2);
             	        actionBar.selectTab(tab1);
             		}
@@ -277,6 +280,9 @@ public class MainActivity extends FragmentActivity implements LocationListener,
 			if (m >= 0) gotten[n][m] = true;
 		}
 		if (actionBar.getSelectedTab() == tab1) {
+//			actionBar.removeTab(tab1);
+//        	actionBar.addTab(tab1, 0);
+//        	actionBar.selectTab(tab1);
 	        actionBar.selectTab(tab2);
 	        actionBar.selectTab(tab1);
 		}
