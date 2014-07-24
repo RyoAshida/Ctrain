@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Ctrain</string>
+    <string name="app_name">Let\'s 満員電車</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="menu_scan">SCAN</string>
     <string name="menu_stop">STOP</string>
     <string name="menu_refresh">Refresh</string>
+    <string name="terminal">端末台数：</string>
+    <string name="latitude">緯度：</string>
+    <string name="longitude">経度：</string>
+    <string name="line">路線：</string>
+    <string name="crowdrate">crowdrate</string>
+    <string name="lineimage">lineimage</string>
+    <string name="icon">icon</string>
+    
+    <string name="initial">0</string>
 
 </resources>

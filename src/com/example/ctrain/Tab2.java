@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 public class Tab2 extends Fragment {
+	
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.fragment_tab2, container, false);
@@ -18,7 +20,6 @@ public class Tab2 extends Fragment {
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		
 		List<Achievement> list = new ArrayList<Achievement>();
 		int n = MainActivity.num;
 		boolean[][] g = MainActivity.gotten;

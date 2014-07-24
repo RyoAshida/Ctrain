@@ -85,11 +85,11 @@ public class MainActivity extends FragmentActivity implements LocationListener,
 		actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		tab1 = actionBar.newTab()
-				.setText("tab1!")
+				.setText("混雑状況")
 				.setTabListener(new TabListener<Tab1> (this, "tab1", Tab1.class));
 		actionBar.addTab(tab1);
 		tab2 = actionBar.newTab()
-				.setText("tab2!!")
+				.setText("実績")
 				.setTabListener(new TabListener<Tab2> (this, "tab2", Tab2.class));
 		actionBar.addTab(tab2);
 		
@@ -97,15 +97,15 @@ public class MainActivity extends FragmentActivity implements LocationListener,
 		BluetoothManager btManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         btAdapter = btManager.getAdapter();
         if (btAdapter == null) {
-            Toast.makeText(this, "Bluetooth is not supported", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Bluetooth is not supported", Toast.LENGTH_LONG).show();
             finish();
         }
         
         //GPS setting
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(5 * 100000); // 5 sec.
-        locationRequest.setFastestInterval(1 * 100000); // 1 sec.
+        locationRequest.setInterval(10 * 1000); // 5 sec.
+        locationRequest.setFastestInterval(5 * 1000); // 1 sec.
         locationClient = new LocationClient(this, this, this);
         
         
@@ -230,8 +230,10 @@ public class MainActivity extends FragmentActivity implements LocationListener,
                 Log.i(TAG, "onReceive: " + action);
                 if (action.equals(BluetoothDevice.ACTION_FOUND)) {
                     btCount++;
-                    actionBar.selectTab(tab2);
-                    actionBar.selectTab(tab1);
+                    if (actionBar.getSelectedTab() == tab1) {
+            	        actionBar.selectTab(tab2);
+            	        actionBar.selectTab(tab1);
+            		}
                 }
                 else if (action.equals(BluetoothAdapter.ACTION_DISCOVERY_STARTED)) {
                     invalidateOptionsMenu();
@@ -250,25 +252,21 @@ public class MainActivity extends FragmentActivity implements LocationListener,
 
 	@Override
 	public void onConnectionFailed(ConnectionResult result) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void onConnected(Bundle connectionHint) {
-		// TODO Auto-generated method stub
 		locationClient.requestLocationUpdates(locationRequest, this);
 	}
 
 	@Override
 	public void onDisconnected() {
-		// TODO Auto-generated method stub
 		locationClient.removeLocationUpdates(this);
 	}
 
 	@Override
 	public void onLocationChanged(Location location) {
-		// TODO Auto-generated method stub
 		Location loc = locationClient.getLastLocation();
 		latitude = loc.getLatitude();
 		longitude = loc.getLongitude();
@@ -278,13 +276,30 @@ public class MainActivity extends FragmentActivity implements LocationListener,
 			int m = rank(btCount);
 			if (m >= 0) gotten[n][m] = true;
 		}
-        actionBar.selectTab(tab2);
-        actionBar.selectTab(tab1);
+		if (actionBar.getSelectedTab() == tab1) {
+	        actionBar.selectTab(tab2);
+	        actionBar.selectTab(tab1);
+		}
 	}
 	
-	private double[][] yamanote = {{35.6926678760627,35.65682986717963,139.695703089233,139.70840603112754},
-			{35.54279441468406,35.51345673479633,140.2534309029537,140.2860465645748}};
-	private double[][] chuo = {};
+	private double[][] yamanote = {{35.70242641256646,35.6583641193756,139.69158321618613,139.71046596765098},
+			{35.65892202195698,35.624882832734365,139.6960464119869,139.72728878259238},
+			{35.62683629306901,35.61539391794844,139.71836239099082,139.74067836999473},
+			{35.644415288174535,35.616231220424325,139.7344985604244,139.74857479333457,},
+			{35.65027409396115,35.64274126474853,139.74136501550254,139.75853115319785},
+			{35.680398307408005,35.64274126474853,139.7509780526119,139.77054744958457},
+			{35.72026750497064,35.68095605601204,139.76333767175254,139.7839370369869},
+			{35.74312056743117,35.7169226043571,139.75132137536582,139.78634029626426},
+			{35.7397766264453,35.7269568849404,139.71012264489707,139.77466732263144},
+			{35.734203079361905,35.695177328078394,139.69089657067832,139.71321254968223},
+			//for demo titech
+			{35.60848583808182,35.60164694927277,139.67785030602988,139.68651920556601}};
+	private double[][] chuo = {{35.70521434650313,35.68569676173465,139.40284878015098,139.71321254968223},
+			{35.68597561800473,35.67914335879439,139.69965130090293,139.73295360803183},
+			{35.70451737215891,35.680398307407906,139.728662073608,139.74599987268027},
+			{35.70437797655885,35.69392261194051,139.74308162927207,139.77758556603965},
+			//for test home
+			{35.536508671998746,35.53462285313818,140.26072651147422,140.26325851678428}};
 	private String getLine(double lat, double lon) {
 		for (int i = 0; i < yamanote.length; i++) {
 			if (yamanote[i][1] < lat && lat < yamanote[i][0] && yamanote[i][2] < lon && lon < yamanote[i][3])
@@ -297,7 +312,7 @@ public class MainActivity extends FragmentActivity implements LocationListener,
 		return Other;
 	}
 	
-	private int rank(int n) {
+	public static int rank(int n) {
 		if (n < 1) return -1;
 		if (n < 2) return 0;
 		if (n < 5) return 1;

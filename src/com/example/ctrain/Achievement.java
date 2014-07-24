@@ -9,15 +9,15 @@ public class Achievement {
 	}
 	
 	public String getLine() {
-		if (line.equals("Chuo"))
-			return "Chuo";
-		else if (line.equals("Yamanote"))
-			return "Yamanote";
+		if (line.equals(MainActivity.Chuo))
+			return MainActivity.Chuo;
+		else if (line.equals(MainActivity.Yamanote))
+			return MainActivity.Yamanote;
 		return "";
 	}
 	
-	public String getCrowd() {
-		return Integer.toString(crowd);
+	public int getCrowd() {
+		return crowd;
 	}
 	
 }
